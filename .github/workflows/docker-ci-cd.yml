@@ -21,10 +21,10 @@ jobs:
 
       - name: Build & Push Backend Image
         run: |
-          docker build -t rkdocker7894/django-backend:latest ./backend
-          docker push rkdocker7894/django-backend:latest
+          docker build -t subhashree1234/django-backend:latest ./backend
+          docker push subhashree1234/django-backend:latest
 
       - name: Build & Push Frontend Image
         run: |
-          docker build -t rkdocker7894/react-frontend:latest ./frontend
-          docker push rkdocker7894/react-frontend:latest
+          docker build -t subhashree1234/react-frontend:latest ./frontend
+          docker push subhashree1234/react-frontend:latest
