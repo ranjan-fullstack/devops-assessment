@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-push-deploy:
-    # IMPORTANT: runs on your self-hosted runner (local machine)
+    # Runs on your local self-hosted runner
     runs-on: self-hosted
 
     steps:
@@ -37,6 +37,6 @@ jobs:
       # 5️⃣ Deploy on Local Machine (Self-Hosted Runner)
       - name: Deploy using Docker Compose
         run: |
-          docker compose down
+          docker compose down || echo "No containers running"
           docker compose pull
           docker compose up -d
