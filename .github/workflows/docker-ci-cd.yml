@@ -36,6 +36,6 @@ jobs:
       # 5️⃣ Deploy locally using Docker Compose
       - name: Deploy using Docker Compose
         run: |
-          docker compose down
-          docker compose pull
-          docker compose up -d
+          docker-compose down
+          docker-compose pull
+          docker-compose up -d
