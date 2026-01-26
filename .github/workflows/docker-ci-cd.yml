@@ -41,6 +41,6 @@ jobs:
       - name: Deploy using Docker Compose
         run: |
           export IMAGE_TAG=${{ env.IMAGE_TAG }}
-          docker compose down || true
-          docker compose pull
-          docker compose up -d
+          docker-compose down || true
+          docker-compose pull
+          docker-compose up -d
