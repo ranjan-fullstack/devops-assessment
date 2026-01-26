@@ -314,3 +314,102 @@ docker compose up -d
 
 
 That’s it. CI/CD handles the rest.
+
+
+
+AWS
+-----
+
+NOTE:
+Ports 5173 and 8000 are exposed only for demonstration purposes.
+In production, frontend should be served via port 80/443 and backend should remain private.
+
+connect to ec2-instace by using powershell
+-----------------------------------------
+ ssh -i devops-assignment.pem ec2-user@35.154.58.195
+
+ 2️⃣ Update system packages
+ sudo yum update -y
+
+3️⃣ Install Docker
+sudo yum install docker -y
+
+ 4️⃣ Start Docker service
+sudo systemctl start docker
+
+5️⃣ Enable Docker on boot
+sudo systemctl enable docker
+
+6️⃣ Add ec2-user to Docker group (VERY IMPORTANT)
+
+Without this, you must use sudo every time.
+
+sudo usermod -aG docker ec2-user
+
+7️⃣ Logout & Login again (mandatory)
+exit
+
+8️⃣ Verify Docker installation
+docker --version
+
+🔐 Common Errors & Fixes (Interview Gold)
+❌ permission denied while trying to connect to Docker daemon
+
+✔ Fix:
+
+sudo usermod -aG docker ec2-user
+exit
+
+
+Reconnect.
+
+❌ docker: command not found
+
+✔ Fix:
+
+sudo yum install docker -y
+
+❌ Docker not starting after reboot
+
+✔ Fix:
+
+sudo systemctl enable docker
+
+🐳 Docker Compose Install & App Deployment on EC2 (Amazon Linux)
+1️⃣ Confirm Docker is running
+docker --version
+sudo systemctl status docker
+
+2️⃣ Install Docker Compose (v2 – recommended)
+Download binary
+sudo curl -L https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 \
+-o /usr/local/bin/docker-compose
+
+Make it executable
+sudo chmod +x /usr/local/bin/docker-compose
+
+Verify
+docker-compose version
+
+
+✅ Install Git on EC2 (Amazon Linux)
+1️⃣ Update package index
+sudo yum update -y
+
+2️⃣ Install Git
+sudo yum install git -y
+
+3️⃣ Verify Git installation
+git --version
+
+✅ Now clone your repository
+git clone https://github.com/ranjan-fullstack/devops-assessment.git
+
+Start containers:
+
+docker compose up -d
+
+
+Check status:
+
+docker ps

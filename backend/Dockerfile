@@ -13,6 +13,7 @@ RUN pip install --no-cache-dir \
     django-cors-headers \
     psycopg2-binary
 
+
 # ---------- Stage 2: Runtime ----------
 FROM python:3.10
 
@@ -27,14 +28,18 @@ COPY --from=builder /usr/local /usr/local
 # Copy backend source code
 COPY . .
 
+# 🔥 IMPORTANT: give write permission for SQLite DB
+RUN chown -R appuser:appuser /app
+
 # Environment variables
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DEBUG=True
 
+# Switch to non-root user
 USER appuser
 
 EXPOSE 8000
 
-# Same as: python manage.py runserver
+# Run Django
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
