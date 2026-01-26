@@ -413,3 +413,77 @@ docker compose up -d
 Check status:
 
 docker ps
+
+🔥 FIX STEP 1: Check Docker is listening on ALL interfaces
+
+Run this inside EC2:
+
+docker ps
+
+
+Then:
+
+docker inspect react-frontend | grep HostPort -n
+
+
+You should see something like:
+
+"HostPort": "5173"
+
+
+Now check binding:
+
+ss -tulnp | grep 5173
+
+
+✅ Expected output:
+
+0.0.0.0:5173
+
+✅ Step 1: Check backend container logs (MOST IMPORTANT)
+
+Run this on EC2:
+
+docker logs django-backend
+
+🧹 IF YOU WANT CLEAN RESTART (SAFE)
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+
+runner on ec2
+------------
+curl -o actions-runner-linux-x64-2.331.0.tar.gz -L https://github.com/actions/runner/releases/download/v2.331.0/actions-runner-linux-x64-2.331.0.tar.gz
+
+echo "5fcc01bd546ba5c3f1291c2803658ebd3cedb3836489eda3be357d41bfcf28a7  actions-runner-linux-x64-2.331.0.tar.gz" | sha256sum -c
+
+tar xzf ./actions-runner-linux-x64-2.331.0.tar.gz
+
+
+We will manually install the .NET runtime dependencies required by GitHub Actions runner.
+
+🔧 Step 1: Install required libraries
+
+Run all commands below on EC2:
+
+sudo dnf install -y \
+  libicu \
+  openssl \
+  krb5-libs \
+  zlib \
+  libgcc \
+  libstdc++ \
+  lttng-ust
+
+
+These are exactly what the runner needs.
+
+🔧 Step 2: Verify libicu is installed
+rpm -qa | grep libicu
+
+# Create the runner and start the configuration experience
+$ ./config.sh --url https://github.com/ranjan-fullstack/devops-assessment --token B2HHYK6JVTTLP3TSZ4HZP7TJO6KHI
+
+for running runner
+------------------
+./run.sh
