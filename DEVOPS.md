@@ -487,3 +487,55 @@ $ ./config.sh --url https://github.com/ranjan-fullstack/devops-assessment --toke
 for running runner
 ------------------
 ./run.sh
+
+Interview-ready summary (USE THIS)
+-----------------------------------
+
+I implemented a CI/CD pipeline using GitHub Actions with a self-hosted runner on AWS EC2.
+On every push to main, Docker images are built, pushed to Docker Hub, and deployed automatically using Docker Compose on EC2
+
+
+full automate build process
+-----------------------------
+
+Developer Pushes Code
+        ↓
+GitHub Actions (CI)
+ - Checkout
+ - Build
+ - Test
+ - Docker Build
+        ↓
+Trigger Jenkins Job
+        ↓
+Jenkins Pipeline
+ - SonarQube Scan
+ - Trivy Scan
+ - Approval (optional)
+ - Deploy to EC2 / EKS
+
+
+jenkin download on ec2
+----------------------
+sudo yum update -y
+sudo yum install java-17-amazon-corretto -y
+sudo wget -O /etc/yum.repos.d/jenkins.repo \
+https://pkg.jenkins.io/redhat-stable/jenkins.repo
+sudo rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+sudo yum install jenkins -y
+sudo systemctl start jenkins
+sudo systemctl enable jenkins
+
+passwod -   sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
+❌ Why Built-In Node is OFFLINE
+
+From your screenshot (red message 👇):
+
+Disk space is below threshold of 1.00 GiB
+Only 453 MB left on /tmp
+
+Jenkins rule:
+
+👉 If /tmp free space < 1 GB, Jenkins automatically marks node OFFLINE
+This is default safety behavior in real companies.
