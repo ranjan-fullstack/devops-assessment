@@ -92,3 +92,28 @@ sudo systemctl restart jenkins
 
 ✅ Verify (quick check)
 sudo -u jenkins docker ps
+
+Implemented Jenkins pipeline to build multiple microservice Docker images (frontend & backend) from a single GitHub repository using service-specific Dockerfiles.
+
+
+🔐 STEP 2A: Create Docker Hub Credentials in Jenkins
+
+Open Jenkins → Manage Jenkins → Credentials
+
+Click (global) → Add Credentials
+
+Fill like this:
+
+Kind: Username with password
+
+Username: <your-dockerhub-username>
+
+Password: <your-dockerhub-password or access token>
+
+ID: dockerhub-creds ✅ (important)
+
+Description: Docker Hub credentials
+
+Click Save
+
+👉 Pro tip: If you have 2FA on Docker Hub, use an Access Token (best practice).
