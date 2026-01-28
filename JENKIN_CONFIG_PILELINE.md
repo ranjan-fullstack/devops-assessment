@@ -117,3 +117,9 @@ Description: Docker Hub credentials
 Click Save
 
 👉 Pro tip: If you have 2FA on Docker Hub, use an Access Token (best practice).
+
+
+
+• Designed and implemented a Jenkins declarative pipeline to build and push multiple Docker images (frontend and backend) to Docker Hub using secure credential management.
+• Integrated GitHub SCM with Jenkins on AWS EC2 to automate containerized CI workflows.
+• Followed industry best practices including multi-service builds, credential isolation, and post-build cleanup.

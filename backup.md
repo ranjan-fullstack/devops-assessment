@@ -104,3 +104,58 @@ jobs:
     depends_on:
       backend:
         condition: service_started
+
+
+
+
+
+        self hosted setup for github
+        -----------------------------
+
+        name: CI/CD Pipeline - Docker Build, Push & EC2 Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-push-deploy:
+    runs-on: self-hosted   # EC2 self-hosted runner (Linux)
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Set image tag from Git commit
+      - name: Set image tag
+        run: echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
+
+      # 3️⃣ Login to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 4️⃣ Build & Push Backend Image
+      - name: Build & Push Backend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/django-backend:${{ env.IMAGE_TAG }} ./backend
+          docker push ${{ secrets.DOCKER_USERNAME }}/django-backend:${{ env.IMAGE_TAG }}
+
+      # 5️⃣ Build & Push Frontend Image
+      - name: Build & Push Frontend Image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/react-frontend:${{ env.IMAGE_TAG }} ./frontend
+          docker push ${{ secrets.DOCKER_USERNAME }}/react-frontend:${{ env.IMAGE_TAG }}
+
+      # 6️⃣ Deploy on EC2 using Docker Compose
+      - name: Deploy using Docker Compose
+        run: |
+          export IMAGE_TAG=${{ env.IMAGE_TAG }}
+          docker-compose down || true
+          docker-compose pull
+          docker-compose up -d
+
