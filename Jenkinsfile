@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         DOCKERHUB_USER = "rkdocker7894"
-        BACKEND_IMAGE  = "backend-app"
-        FRONTEND_IMAGE = "frontend-app"
+        BACKEND_IMAGE  = "django-backend"
+        FRONTEND_IMAGE = "react-frontend"
     }
 
     stages {
