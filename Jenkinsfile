@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "jenkins-demo-app"
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,9 +12,19 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('Docker Build') {
             steps {
-                sh 'echo Jenkins pipeline working successfully'
+                sh '''
+                  docker build -t $IMAGE_NAME:latest .
+                '''
+            }
+        }
+
+        stage('Docker Verify') {
+            steps {
+                sh '''
+                  docker images | grep $IMAGE_NAME
+                '''
             }
         }
     }
