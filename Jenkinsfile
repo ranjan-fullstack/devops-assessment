@@ -56,11 +56,31 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy on EC2 using Docker Compose') {
+            steps {
+                sh '''
+                  echo "🚀 Deploying application on EC2..."
+
+                  docker-compose down
+                  docker-compose pull
+                  docker-compose up -d
+
+                  docker ps
+                '''
+            }
+        }
     }
 
     post {
         always {
             sh 'docker logout'
+        }
+        success {
+            echo "✅ Application deployed successfully on EC2"
+        }
+        failure {
+            echo "❌ Deployment failed"
         }
     }
 }

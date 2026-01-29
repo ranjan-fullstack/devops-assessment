@@ -159,3 +159,24 @@ jobs:
           docker-compose pull
           docker-compose up -d
 
+docker-compose backup fresh image build 
+=======================================
+
+version: "3.9"
+
+services:
+  backend:
+    image: rkdocker7894/django-backend:${IMAGE_TAG}
+    container_name: django-backend
+    ports:
+      - "8000:8000"
+    restart: always
+
+  frontend:
+    image: rkdocker7894/react-frontend:${IMAGE_TAG}
+    container_name: react-frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: always
