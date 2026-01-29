@@ -10,12 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Trigger Jenkins Pipeline with Crumb
+      - name: Trigger Jenkins Pipeline with Crumb (Stable)
         run: |
           CRUMB=$(curl -s -u "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}" \
-          "${{ secrets.JENKINS_URL }}/crumbIssuer/api/json" | jq -r '.crumb')
+          "${{ secrets.JENKINS_URL }}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
+
+          echo "Using crumb: $CRUMB"
 
           curl -X POST \
           -u "${{ secrets.JENKINS_USER }}:${{ secrets.JENKINS_TOKEN }}" \
-          -H "Jenkins-Crumb: $CRUMB" \
+          -H "$CRUMB" \
           "${{ secrets.JENKINS_URL }}/job/${{ secrets.JENKINS_JOB }}/build"
