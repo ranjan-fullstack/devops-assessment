@@ -22,12 +22,15 @@ pipeline {
         stage('SonarQube Scan') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh '''
-                      sonar-scanner \
-                      -Dsonar.projectKey=devops-assessment \
-                      -Dsonar.sources=backend,frontend \
-                      -Dsonar.sourceEncoding=UTF-8
-                    '''
+                    script {
+                        def scannerHome = tool 'sonar-scanner'
+                        sh """
+                          ${scannerHome}/bin/sonar-scanner \
+                          -Dsonar.projectKey=devops-assessment \
+                          -Dsonar.sources=backend,frontend \
+                          -Dsonar.sourceEncoding=UTF-8
+                        """
+                    }
                 }
             }
         }
@@ -46,17 +49,13 @@ pipeline {
 
         stage('Build Backend Image') {
             steps {
-                sh '''
-                  docker build -t $BACKEND_IMAGE:latest ./backend
-                '''
+                sh 'docker build -t $BACKEND_IMAGE:latest ./backend'
             }
         }
 
         stage('Build Frontend Image') {
             steps {
-                sh '''
-                  docker build -t $FRONTEND_IMAGE:latest ./frontend
-                '''
+                sh 'docker build -t $FRONTEND_IMAGE:latest ./frontend'
             }
         }
 
@@ -67,22 +66,20 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-                    sh '''
-                      echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
-                    '''
+                    sh 'echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin'
                 }
             }
         }
 
         stage('Tag & Push Images') {
             steps {
-                sh '''
+                sh """
                   docker tag $BACKEND_IMAGE:latest $DOCKERHUB_USER/$BACKEND_IMAGE:latest
                   docker tag $FRONTEND_IMAGE:latest $DOCKERHUB_USER/$FRONTEND_IMAGE:latest
 
                   docker push $DOCKERHUB_USER/$BACKEND_IMAGE:latest
                   docker push $DOCKERHUB_USER/$FRONTEND_IMAGE:latest
-                '''
+                """
             }
         }
 
@@ -92,7 +89,7 @@ pipeline {
 
         stage('Deploy on EC2 using Docker Compose') {
             steps {
-                sh '''
+                sh """
                   echo "🚀 Deploying on EC2..."
 
                   docker-compose down || true
@@ -100,7 +97,7 @@ pipeline {
                   docker-compose up -d --remove-orphans
 
                   docker ps
-                '''
+                """
             }
         }
     }
