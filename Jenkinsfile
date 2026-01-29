@@ -57,19 +57,20 @@ pipeline {
             }
         }
 
-        stage('Deploy on EC2 using Docker Compose') {
-            steps {
+      stage('Deploy on EC2 using Docker Compose') {
+           steps {
                 sh '''
-                  echo "🚀 Deploying application on EC2..."
+                  echo "🚀 Deploying on EC2..."
 
-                  docker-compose down
+                  docker-compose down || true
                   docker-compose pull
-                  docker-compose up -d
+                  docker-compose up -d --remove-orphans
 
                   docker ps
                 '''
             }
         }
+
     }
 
     post {
