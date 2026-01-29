@@ -15,6 +15,35 @@ pipeline {
             }
         }
 
+        /* =======================
+           🔐 CODE QUALITY & SECURITY
+           ======================= */
+
+        stage('SonarQube Scan') {
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh '''
+                      sonar-scanner \
+                      -Dsonar.projectKey=devops-assessment \
+                      -Dsonar.sources=backend,frontend \
+                      -Dsonar.sourceEncoding=UTF-8
+                    '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        /* =======================
+           🐳 DOCKER BUILD
+           ======================= */
+
         stage('Build Backend Image') {
             steps {
                 sh '''
@@ -57,8 +86,12 @@ pipeline {
             }
         }
 
-      stage('Deploy on EC2 using Docker Compose') {
-           steps {
+        /* =======================
+           🚀 DEPLOYMENT
+           ======================= */
+
+        stage('Deploy on EC2 using Docker Compose') {
+            steps {
                 sh '''
                   echo "🚀 Deploying on EC2..."
 
@@ -70,7 +103,6 @@ pipeline {
                 '''
             }
         }
-
     }
 
     post {
@@ -81,7 +113,7 @@ pipeline {
             echo "✅ Application deployed successfully on EC2"
         }
         failure {
-            echo "❌ Deployment failed"
+            echo "❌ Pipeline failed (Quality Gate / Build / Deploy)"
         }
     }
 }

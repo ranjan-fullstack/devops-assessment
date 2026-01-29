@@ -123,3 +123,5 @@ Click Save
 • Designed and implemented a Jenkins declarative pipeline to build and push multiple Docker images (frontend and backend) to Docker Hub using secure credential management.
 • Integrated GitHub SCM with Jenkins on AWS EC2 to automate containerized CI workflows.
 • Followed industry best practices including multi-service builds, credential isolation, and post-build cleanup.
+
+I containerized backend and frontend separately, deployed them using Docker Compose on EC2, and automated redeployment via Jenkins after every GitHub push.
